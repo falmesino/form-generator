@@ -19,7 +19,10 @@ const handleButtonSave = async () => {
     try {
       const parsed = JSON.parse(value.value)
       await db.entries.update(selectedEntry.value.id, { json: parsed })
-      selectedEntry.value.json = parsed
+      selectedEntry.value = {
+        ...selectedEntry.value,
+        json: parsed
+}
       ElMessage.success('Saved!')
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

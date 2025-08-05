@@ -36,16 +36,19 @@ function getAllIds() {
 
 function buildModel() {
   const allIds = getAllIds()
-  const model: Record<string, string> = {}
-  allIds.forEach(id => {
-    model[id] = ''
+  // Remove keys not in allIds
+  Object.keys(formModel.value).forEach(key => {
+    if (!allIds.includes(key)) {
+      delete formModel.value[key]
+    }
   })
-
-  formModel.value = model
-
+  // Add new keys
+  allIds.forEach(id => {
+    if (!(id in formModel.value)) formModel.value[id] = ''
+  })
   console.log('buildModel', selectedEntry.value)
   console.log('buildModel::allIds', allIds)
-  console.log('buildModel::model', model)
+  console.log('buildModel::model', formModel.value)
 }
 
 function buildRules() {
@@ -103,6 +106,8 @@ async function onSubmit() {
   }
 }
 
+const formKey = computed(() => getAllIds().join('-'))
+
 onMounted(() => {
   console.log('FormViewer::mounted')
   buildModel()
@@ -140,6 +145,7 @@ watch(selectedEntry, (newValue) => {
 
       <el-form
         ref="formRef"
+        :key="formKey"
         :model="formModel"
         :rules="rules"
         :inline="false"

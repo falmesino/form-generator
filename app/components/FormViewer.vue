@@ -4,9 +4,118 @@ import DynamicFormRenderer from './DynamicFormRenderer.vue';
 
 const selectedEntry = useSelectedEntry()
 
-function onSubmit() {
-  console.log('Submitting form')
+const formModel = ref<Record<string, string>>({})
+const rules = ref<Record<string, any[]>>({})
+const formRef = ref()
+
+function collectIds(components: any[] = [], ids: string[] = []) {
+  for (const comp of components) {
+    if (comp.id && comp.type !== 'section') ids.push(comp.id)
+    if (comp.components && Array.isArray(comp.components)) {
+      collectIds(comp.components, ids)
+    }
+  }
+  return ids
 }
+
+function getAllFields(components: any[] = [], fields: any[] = []) {
+  for (const comp of components) {
+    if (comp.id && comp.type !== 'section') fields.push(comp)
+    if (comp.components && Array.isArray(comp.components)) {
+      getAllFields(comp.components, fields)
+    }
+  }
+  return fields
+}
+
+function getAllIds() {
+  const components = selectedEntry.value?.json?.components
+  if (!components) return []
+  return collectIds(components)
+}
+
+function buildModel() {
+  const allIds = getAllIds()
+  const model: Record<string, string> = {}
+  allIds.forEach(id => {
+    model[id] = ''
+  })
+
+  formModel.value = model
+
+  console.log('buildModel', selectedEntry.value)
+  console.log('buildModel::allIds', allIds)
+  console.log('buildModel::model', model)
+}
+
+function buildRules() {
+  const components = selectedEntry.value?.json?.components
+  if (!components) {
+    rules.value = {}
+    return
+  }
+  const fields = getAllFields(components)
+  const newRules: Record<string, any[]> = {}
+
+  fields.forEach((field: any) => {
+    const fieldRules: any[] = []
+    const v = field.validation || {}
+
+    if (v.required) {
+      fieldRules.push({ required: true, message: `${field.label} wajib diisi`, trigger: ['blur', 'change'] })
+    }
+    if (v.min_length) {
+      fieldRules.push({ min: v.min_length, message: `${field.label} minimal ${v.min_length} karakter`, trigger: 'blur' })
+    }
+    if (v.max_length) {
+      fieldRules.push({ max: v.max_length, message: `${field.label} maksimal ${v.max_length} karakter`, trigger: 'blur' })
+    }
+    if (v.pattern) {
+      fieldRules.push({ pattern: new RegExp(v.pattern), message: `${field.label} format tidak valid`, trigger: 'blur' })
+    }
+    if (v.format && field.type === 'date') {
+      // You can add custom date format validation here if needed
+    }
+    // Add more validation rules as needed
+
+    if (fieldRules.length > 0) {
+      newRules[field.id] = fieldRules
+    }
+  })
+
+  rules.value = newRules
+}
+
+async function onSubmit() {
+  console.log('Submitting form', formRef.value)
+  
+  if (!formRef.value) {
+    console.error('Form reference is not set')
+  } else {
+    await formRef.value.validate((valid: boolean) => {
+      if (valid) {
+        console.log('Form valid, submitting:', formModel.value)
+        // handle submit
+      } else {
+        console.error('Form invalid')
+      }
+    })
+  }
+}
+
+onMounted(() => {
+  console.log('FormViewer::mounted')
+  buildModel()
+  buildRules()
+})
+
+watch(selectedEntry, (newValue) => {
+  if (newValue?.json?.components) {
+    console.log('rebuild model and rules')
+    buildModel()
+    buildRules()
+  }
+}, { immediate: true })
 </script>
 
 <template>
@@ -17,16 +126,33 @@ function onSubmit() {
 
     <div class="border border-gray-300 min-h-full rounded-md flex flex-col items-stretch justify-start overflow-auto p-4 pb-72">
 
+      <pre class="hidden">
+        {{ selectedEntry }}
+      </pre>
+
+      <pre class="raw">
+        {{ formModel }}
+      </pre>
+
+      <pre class="hidden">
+        {{ rules }}
+      </pre>
+
       <el-form
+        ref="formRef"
+        :model="formModel"
+        :rules="rules"
         :inline="false"
         :label-position="'top'"
         :require-asterisk-position="'right'"
-        :show-message="false"
+        :show-message="true"
         class="flex flex-col items-stretch justify-start gap-2"
       >
 
         <DynamicFormRenderer
           :components="selectedEntry?.json?.components"
+          :form-model="formModel"
+          @update:form-model="val => formModel.value = val"
         />
 
         <el-form-item
@@ -48,6 +174,7 @@ function onSubmit() {
 
 <style lang="scss" scoped>
 .raw {
-  @apply text-sm whitespace-pre-wrap break-words max-h-[calc(100vh)] overflow-auto;
+  @apply border border-gray-300 rounded-md p-2 mb-4;
+  @apply text-sm;
 }
 </style>

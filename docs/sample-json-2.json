@@ -1,0 +1,57 @@
+{
+  "id": 2,
+  "title": "Formulir Approval Siswa Baru",
+  "description": "Formulir ini digunakan untuk menyetujui pendaftaran siswa baru.",
+  "components": [
+    {
+      "id": "nomor_pendaftaran",
+      "label": "Nomor Pendaftaran",
+      "placeholder": "Masukkan nomor pendaftaran",
+      "type": "text",
+      "type_category": "field",
+      "order": 1,
+      "validation": {
+        "required": true,
+        "max_length": 12,
+        "pattern": "^[0-9]+$"
+      },
+      "options": [],
+      "source": null,
+      "depend_on": null
+    },
+    {
+      "id": "ruang_ujian",
+      "label": "Ruang Ujian",
+      "placeholder": "Masukkan ruangan ujian",
+      "type": "text",
+      "type_category": "field",
+      "order": 1,
+      "validation": {
+        "required": true,
+        "pattern": "^[a-zA-Z ]+$"
+      },
+      "options": [],
+      "source": null,
+      "depend_on": null
+    },
+    {
+      "id": "tanggal_ujian",
+      "label": "Tanggal Ujian",
+      "placeholder": "Masukkan tanggal ujian",
+      "type": "date",
+      "type_category": "field",
+      "order": 1,
+      "validation": {
+        "required": true,
+        "format": [
+          "YYYY-MM-DD"
+        ],
+        "min_date": "2023-01-01",
+        "max_date": "2023-12-31"
+      },
+      "options": [],
+      "source": null,
+      "depend_on": null
+    }
+  ]
+}

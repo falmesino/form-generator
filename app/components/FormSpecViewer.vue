@@ -13,27 +13,39 @@ const editorOptions = ref({
 })
 
 const handleButtonSave = async () => {
-  if (!selectedEntry.value) return
-  try {
-    const parsed = JSON.parse(value.value)
-    await db.entries.update(selectedEntry.value.id, { json: parsed })
-    selectedEntry.value.json = parsed
-    ElMessage.success('Saved!')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    ElMessage.error('Invalid JSON', err)
+  if (!selectedEntry.value) {
+    console.error('No selected entry to save')
+  } else {
+    try {
+      const parsed = JSON.parse(value.value)
+      await db.entries.update(selectedEntry.value.id, { json: parsed })
+      selectedEntry.value.json = parsed
+      ElMessage.success('Saved!')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      ElMessage.error('Invalid JSON', err)
+    }
   }
 }
 
 const handleButtonRefresh = () => {
   ElMessage.info('Do some refresh')
+
+  if (selectedEntry.value) {
+    console.log('selectedEntry', selectedEntry.value)
+  }
 }
 
 const handleButtonRenderForm = () => {
   ElMessage.info('Render form clicked')
+
+  if (selectedEntry.value) {
+    console.log('selectedEntry', selectedEntry.value)
+  }
 }
 
 watch(selectedEntry, (entry) => {
+  console.log('selectedEntry changed', entry)
   value.value = entry ? JSON.stringify(entry.json, null, 2) : ''
 })
 

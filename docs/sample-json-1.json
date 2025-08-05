@@ -1,0 +1,132 @@
+{
+  "id": 1,
+  "title": "Formulir Pendafatar Siswa Barux",
+  "description": "Formulir ini digunakan untuk mengumpulkan informasi siswa baru.",
+  "components": [
+    {
+      "id": "informasi_pribadi",
+      "label": "Informasi Pribadi",
+      "placeholder": null,
+      "type": "section",
+      "type_category": "layout",
+      "order": 1,
+      "components": [
+        {
+          "id": "nama_lengkap",
+          "label": "Nama Lengkap",
+          "placeholder": "Masukkan nama lengkap",
+          "type": "text",
+          "type_category": "field",
+          "order": 1,
+          "validation": {
+            "required": true,
+            "min_length": 3,
+            "max_length": 100,
+            "pattern": "^[a-zA-Z ]+$"
+          },
+          "options": [],
+          "source": null,
+          "depend_on": null
+        },
+        {
+          "id": "nama_beken",
+          "label": "Nama Beken",
+          "placeholder": "Masukkan nama beken",
+          "type": "text",
+          "type_category": "field",
+          "order": 1,
+          "validation": {
+            "required": true,
+            "min_length": 3,
+            "max_length": 100,
+            "pattern": "^[a-zA-Z ]+$"
+          },
+          "options": [],
+          "source": null,
+          "depend_on": null
+        },
+        {
+          "id": "jenis_kelamin",
+          "label": "Jenis Kelamin",
+          "placeholder": null,
+          "type": "radio",
+          "type_category": "field",
+          "order": 2,
+          "validation": {
+            "required": true
+          },
+          "options": [
+            "Laki-laki",
+            "Perempuan"
+          ],
+          "source": null,
+          "depend_on": null
+        },
+        {
+          "id": "tempat_tinggal",
+          "label": "Tempat Tinggal",
+          "placeholder": null,
+          "type": "section",
+          "type_category": "layout",
+          "order": 3,
+          "components": [
+            {
+              "id": "provinsi",
+              "label": "Provinsi",
+              "placeholder": "-- Pilih Provinsi --",
+              "type": "dropdown",
+              "type_category": "field",
+              "order": 1,
+              "validation": {
+                "required": true
+              },
+              "options": [],
+              "source": "provinces",
+              "depend_on": null
+            },
+            {
+              "id": "provinsi",
+              "label": "Provinsi",
+              "placeholder": "-- Pilih Provinsi --",
+              "type": "dropdown",
+              "type_category": "field",
+              "order": 1,
+              "validation": {
+                "required": true
+              },
+              "options": [],
+              "source": "provinces",
+              "depend_on": null
+            },
+            {
+              "id": "kota",
+              "label": "Kota",
+              "placeholder": "-- Pilih Kota --",
+              "type": "dropdown",
+              "type_category": "field",
+              "order": 1,
+              "validation": {
+                "required": true
+              },
+              "options": [],
+              "source": "cities",
+              "depend_on": "provinsi"
+            },
+            {
+              "id": "alamat",
+              "label": "Alamat",
+              "placeholder": null,
+              "type": "textarea",
+              "type_category": "field",
+              "order": 1,
+              "validation": {},
+              "options": [],
+              "source": null,
+              "depend_on": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
